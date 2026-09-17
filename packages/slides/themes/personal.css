@@ -1,0 +1,586 @@
+/* @theme personal */
+/* @size 16:9 1280px 720px */
+/* @size 4:3 960px 720px */
+/*
+  個人登壇用テーマ（社名・ブランドに依存しない）。
+  背景画像は使わず、すべてCSSで描画する。
+  配色は :root の CSS 変数を書き換えるだけで変更できる。
+*/
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ========================================
+   Variables
+   ======================================== */
+
+:root {
+  /* 閲覧環境のダークモード設定に引きずられないよう固定する */
+  color-scheme: light;
+
+  /*
+    配色は yosegi のブランドパレットに準拠する。
+    https://github.com/dachi023/yosegi (assets/brand/README.md)
+  */
+  --sumi: #14110f;
+  --mizuki: #f0e7d6;
+  --walnut: #5b3b27;
+  --keyaki: #b98a52;
+  --jindai: #7a7268;
+
+  --color-bg: #f7f2e9;
+  --color-ink: var(--sumi);
+  --color-ink-2: #56504a;
+  --color-ink-3: var(--jindai);
+  --color-invert: var(--mizuki);
+
+  /* 差し色。明色背景では Walnut、暗色背景では Keyaki */
+  --color-accent: var(--walnut);
+  --color-accent-on-dark: var(--keyaki);
+
+  /*
+    面と罫線は Walnut を背景に混ぜて作る。Sumi は彩度が無く、
+    混ぜるとクリーム地から浮いたグレーになるため使わない。
+  */
+  --rule: color-mix(in srgb, var(--walnut) 24%, var(--color-bg));
+  --rule-strong: color-mix(in srgb, var(--walnut) 50%, var(--color-bg));
+  --surface: color-mix(in srgb, var(--walnut) 7%, var(--color-bg));
+  --surface-strong: color-mix(in srgb, var(--walnut) 13%, var(--color-bg));
+
+  /* 英数字は Nunito Sans、日本語は Zen Kaku Gothic New */
+  --font-sans: 'Nunito Sans', 'Zen Kaku Gothic New', 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  /* 等幅はコードにだけ使う */
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --pad-x: 64px;
+}
+
+/* ========================================
+   Common - All slides
+   ======================================== */
+
+section {
+  --marpit-html: enable;
+  background-color: var(--color-bg);
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  font-size: 18pt;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  padding: 76px var(--pad-x) 76px;
+  /* タイトル位置がスライド間でブレないよう本文スライドは上揃えにする */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* ページ番号（paginate: true のとき） */
+section::after {
+  right: var(--pad-x);
+  bottom: 26px;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 9pt;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-3);
+}
+
+section h1,
+section h2,
+section h3,
+section h4,
+section h5,
+section h6 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+/* default テーマの --h1-color（ネイビー）を打ち消す */
+section h1 {
+  color: var(--color-ink);
+}
+
+section h2 {
+  position: relative;
+  font-size: 25pt;
+  font-weight: 700;
+  margin: 0 0 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+section h3 {
+  font-size: 19pt;
+  font-weight: 600;
+  color: var(--color-ink-2);
+  margin: 28px 0 10px;
+}
+
+section strong {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+section a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+section ul,
+section ol {
+  padding-left: 1.2em;
+}
+
+section li {
+  margin-bottom: 6px;
+}
+
+section li::marker {
+  color: var(--color-ink-3);
+}
+
+section img {
+  max-width: 100%;
+}
+
+/* テキストユーティリティ */
+section .lede {
+  font-size: 20pt;
+  color: var(--color-ink-2);
+  line-height: 1.6;
+}
+
+section .note {
+  font-size: 13pt;
+  color: var(--color-ink-3);
+}
+
+/*
+  図のプレースホルダ。登壇時は <img> や実際の図に差し替える。
+  高さを指定したい場合は style="height: 280px" のように書く。
+*/
+section .figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 24px;
+  box-sizing: border-box;
+  border: 1px dashed color-mix(in srgb, var(--color-ink) 22%, transparent);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--color-ink-3);
+  font-size: 13pt;
+  text-align: center;
+}
+
+/* 2カラムレイアウト用ユーティリティ */
+section .cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+section .cols > div > :first-child {
+  margin-top: 0;
+}
+
+/* ========================================
+   Cover slide (lead)
+   ======================================== */
+
+section.lead {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 88px 80px;
+}
+
+/* 表紙はページ番号を出さない */
+section.lead::after {
+  display: none;
+}
+
+section.lead h1 {
+  margin: 0;
+  font-size: 44pt;
+  font-weight: 700;
+  line-height: 1.28;
+}
+
+section.lead .event-name {
+  margin: 22px 0 0;
+  font-size: 15pt;
+  color: var(--color-ink-2);
+}
+
+section.lead .speaker {
+  position: absolute;
+  left: 80px;
+  bottom: 60px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+section.lead .speaker-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+section.lead .speaker-name {
+  margin: 0;
+  font-size: 14pt;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+section.lead .speaker-links {
+  display: flex;
+  gap: 16px;
+  margin: 4px 0 0;
+  font-size: 11pt;
+  line-height: 1.3;
+  color: var(--color-ink-2);
+}
+
+/*
+  ブランドアイコン。X・GitHubともロゴが箱いっぱいに入っているため、
+  同じ height を与えれば見た目の大きさが揃う。
+  縦位置は inline-flex の中央揃えでテキストに合わせる。
+*/
+section .icon {
+  height: 11pt;
+  width: auto;
+}
+
+/* ========================================
+   Section cover slide
+   ======================================== */
+
+section.section-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 88px 80px;
+  background-color: var(--walnut);
+  color: var(--color-invert);
+}
+
+section.section-cover::after {
+  color: var(--color-accent-on-dark);
+}
+
+section.section-cover h1 {
+  margin: 0;
+  font-size: 34pt;
+  font-weight: 700;
+  color: var(--color-invert);
+}
+
+section.section-cover .section-description {
+  margin: 20px 0 0;
+  font-size: 16pt;
+  color: color-mix(in srgb, var(--color-invert) 72%, transparent);
+}
+
+/* ========================================
+   Statement slide（一言だけ大きく見せる）
+   ======================================== */
+
+section.statement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 76px;
+}
+
+section.statement h2 {
+  padding-bottom: 0;
+  border-bottom: none;
+  font-size: 36pt;
+  line-height: 1.4;
+  margin: 0;
+}
+
+section.statement .note {
+  margin-top: 24px;
+}
+
+/* ========================================
+   Split slide（プロフィールなど）
+   ======================================== */
+
+section.split {
+  padding: 0;
+}
+
+section.split::after {
+  bottom: 26px;
+}
+
+section.split .split-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+section.split .split-left h2 {
+  font-size: 30pt;
+  margin: 0 0 6px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+section.split .split-left .role {
+  margin: 0 0 20px;
+  font-size: 12pt;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+}
+
+section.split .split-left ul {
+  margin: 0 0 20px;
+  font-size: 16pt;
+}
+
+section.split .split-left .links {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+  font-size: 12pt;
+  color: var(--color-ink-2);
+}
+
+/* アイコンとテキストを中央で揃える */
+section .speaker-links span,
+section .links span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+section.split .split-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--mizuki);
+}
+
+section.split .split-right img {
+  width: 58%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* ========================================
+   Table
+   ======================================== */
+
+section table {
+  font-size: 15pt;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+/*
+  default テーマは行に白と #f6f8fa の縞と灰色の罫線を敷く。
+  クリーム地から浮くのですべて打ち消し、色は下のルールだけで作る。
+*/
+section table tr,
+section table tr:nth-child(2n) {
+  background: transparent;
+  border-top: none;
+}
+
+section table th,
+section table td {
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 12px 18px;
+  background: transparent;
+  text-align: left;
+}
+
+/* 見出し行は Walnut の文字と薄い面で立てる */
+section table th {
+  font-weight: 700;
+  color: var(--color-accent);
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+section table td {
+  color: var(--color-ink);
+}
+
+section table tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* ========================================
+   Blockquote
+   ======================================== */
+
+section blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 20px;
+  margin-left: 0;
+  color: var(--color-ink-2);
+  font-style: normal;
+}
+
+section blockquote::before,
+section blockquote::after {
+  content: none;
+}
+
+/* ========================================
+   Code
+   ======================================== */
+
+section pre {
+  background: var(--surface);
+  border: none;
+  border-radius: 6px;
+  font-size: 13pt;
+  line-height: 1.55;
+  color: var(--sumi);
+}
+
+section pre code,
+section pre code span {
+  font-family: var(--font-mono);
+  color: inherit;
+}
+
+section :not(pre) > code {
+  font-family: var(--font-mono);
+  background-color: var(--surface-strong);
+  color: var(--color-accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.82em;
+}
+
+/* ----------------------------------------
+   Syntax highlight (highlight.js)
+   yosegi のパレット内で色数を絞る
+   ---------------------------------------- */
+
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+}
+
+code.hljs {
+  padding: 3px 5px;
+}
+
+.hljs {
+  color: var(--sumi);
+  background: transparent;
+}
+
+/* コメントは最も弱く */
+.hljs-comment,
+.hljs-quote,
+.hljs-code,
+.hljs-formula {
+  color: var(--jindai);
+}
+
+/* キーワードは差し色 */
+.hljs-keyword,
+.hljs-doctag,
+.hljs-type,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-variable.language_,
+.hljs-selector-tag,
+.hljs-name {
+  color: var(--walnut);
+  font-weight: 500;
+}
+
+/* 文字列 */
+.hljs-string,
+.hljs-regexp,
+.hljs-meta .hljs-string,
+.hljs-selector-pseudo {
+  color: #6f4a33;
+}
+
+/* リテラル・属性・組み込み */
+.hljs-number,
+.hljs-literal,
+.hljs-attr,
+.hljs-attribute,
+.hljs-meta,
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-variable,
+.hljs-operator {
+  color: #8a5e42;
+}
+
+/* 識別子は本文色のまま太さで区別する */
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_,
+.hljs-section {
+  color: var(--sumi);
+  font-weight: 600;
+}
+
+.hljs-subst {
+  color: var(--sumi);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* 差分は意味が変わるので色相を変える */
+.hljs-addition {
+  color: #3f6b45;
+  background-color: color-mix(in srgb, #3f6b45 10%, transparent);
+}
+
+.hljs-deletion {
+  color: #9b3b34;
+  background-color: color-mix(in srgb, #9b3b34 10%, transparent);
+}
