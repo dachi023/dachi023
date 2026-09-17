@@ -1,0 +1,17 @@
+{
+  "name": "@dachi023/slides",
+  "private": true,
+  "scripts": {
+    "dev": "marp --input-dir src/ --server --allow-local-files --html --theme-set themes/mosh.css themes/personal.css",
+    "preview": "marp --input-dir src/ --server --preview --allow-local-files --html --theme-set themes/mosh.css themes/personal.css",
+    "build": "marp --input-dir src/ -o dist --allow-local-files --html --theme-set themes/mosh.css themes/personal.css --pdf",
+    "lint": "textlint 'src/*.md'"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.2.3",
+    "textlint": "^14.8.0",
+    "textlint-filter-rule-comments": "^1.2.2",
+    "textlint-rule-preset-ja-spacing": "^2.4.3",
+    "textlint-rule-preset-ja-technical-writing": "^12.0.2"
+  }
+}

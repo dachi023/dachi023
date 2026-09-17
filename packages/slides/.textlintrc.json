@@ -1,0 +1,14 @@
+{
+  "filters": {
+    "comments": true
+  },
+  "rules": {
+    "preset-ja-spacing": true,
+    "preset-ja-technical-writing": {
+      "no-exclamation-question-mark": false,
+      "ja-no-weak-phrase": false,
+      "ja-no-mixed-period": false,
+      "no-mix-dearu-desumasu": false
+    }
+  }
+}
